@@ -1,0 +1,624 @@
+[
+    {
+        "key": "group_672df4a086b9d",
+        "title": "Enquire URL",
+        "fields": [
+            {
+                "key": "field_672df4a0e70e5",
+                "label": "Enquire",
+                "name": "enquire",
+                "aria-label": "",
+                "type": "text",
+                "instructions": "",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "default_value": "\/contact-us",
+                "maxlength": "",
+                "allow_in_bindings": 0,
+                "placeholder": "",
+                "prepend": "",
+                "append": ""
+            }
+        ],
+        "location": [
+            [
+                {
+                    "param": "post_type",
+                    "operator": "==",
+                    "value": "event"
+                },
+                {
+                    "param": "post_taxonomy",
+                    "operator": "==",
+                    "value": "event-type:enquiry-now"
+                }
+            ]
+        ],
+        "menu_order": 0,
+        "position": "normal",
+        "style": "default",
+        "label_placement": "top",
+        "instruction_placement": "label",
+        "hide_on_screen": "",
+        "active": true,
+        "description": "",
+        "show_in_rest": 0
+    },
+    {
+        "key": "group_6734ab3cdadda",
+        "title": "Event Category Image",
+        "fields": [
+            {
+                "key": "field_6734ab3e3de1f",
+                "label": "Event Category Image",
+                "name": "event_category_image",
+                "aria-label": "",
+                "type": "image",
+                "instructions": "",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "return_format": "id",
+                "library": "all",
+                "min_width": "",
+                "min_height": "",
+                "min_size": "",
+                "max_width": "",
+                "max_height": "",
+                "max_size": "",
+                "mime_types": "",
+                "allow_in_bindings": 0,
+                "preview_size": "medium"
+            }
+        ],
+        "location": [
+            [
+                {
+                    "param": "taxonomy",
+                    "operator": "==",
+                    "value": "event-category"
+                }
+            ]
+        ],
+        "menu_order": 0,
+        "position": "normal",
+        "style": "default",
+        "label_placement": "top",
+        "instruction_placement": "label",
+        "hide_on_screen": "",
+        "active": true,
+        "description": "",
+        "show_in_rest": 0
+    },
+    {
+        "key": "group_671bab8f1d4eb",
+        "title": "Event Infos",
+        "fields": [
+            {
+                "key": "field_6724ef39026bf",
+                "label": "Event Date",
+                "name": "event_date",
+                "aria-label": "",
+                "type": "date_picker",
+                "instructions": "",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "display_format": "j F Y",
+                "return_format": "j F Y",
+                "first_day": 1,
+                "allow_in_bindings": 0
+            },
+            {
+                "key": "field_6724ef67026c0",
+                "label": "Event Location",
+                "name": "event_location",
+                "aria-label": "",
+                "type": "text",
+                "instructions": "",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "default_value": "",
+                "maxlength": "",
+                "allow_in_bindings": 0,
+                "placeholder": "",
+                "prepend": "",
+                "append": ""
+            },
+            {
+                "key": "field_672df2ec9f350",
+                "label": "Price Start From",
+                "name": "price_start_from",
+                "aria-label": "",
+                "type": "number",
+                "instructions": "",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "default_value": "",
+                "min": "",
+                "max": "",
+                "allow_in_bindings": 0,
+                "placeholder": "",
+                "step": "",
+                "prepend": "",
+                "append": ""
+            },
+            {
+                "key": "field_6724a59f1eadb",
+                "label": "Package",
+                "name": "package",
+                "aria-label": "",
+                "type": "repeater",
+                "instructions": "",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "layout": "row",
+                "pagination": 1,
+                "rows_per_page": 5,
+                "min": 0,
+                "max": 0,
+                "collapsed": "",
+                "button_label": "Add Row",
+                "sub_fields": [
+                    {
+                        "key": "field_6724a82c8aabf",
+                        "label": "Package Title",
+                        "name": "package_title",
+                        "aria-label": "",
+                        "type": "text",
+                        "instructions": "",
+                        "required": 0,
+                        "conditional_logic": 0,
+                        "wrapper": {
+                            "width": "",
+                            "class": "",
+                            "id": ""
+                        },
+                        "default_value": "",
+                        "maxlength": "",
+                        "allow_in_bindings": 0,
+                        "placeholder": "",
+                        "prepend": "",
+                        "append": "",
+                        "parent_repeater": "field_6724a59f1eadb"
+                    },
+                    {
+                        "key": "field_6724a5ba1eadc",
+                        "label": "Details",
+                        "name": "details",
+                        "aria-label": "",
+                        "type": "wysiwyg",
+                        "instructions": "",
+                        "required": 0,
+                        "conditional_logic": 0,
+                        "wrapper": {
+                            "width": "",
+                            "class": "",
+                            "id": ""
+                        },
+                        "default_value": "",
+                        "allow_in_bindings": 0,
+                        "tabs": "all",
+                        "toolbar": "full",
+                        "media_upload": 1,
+                        "delay": 0,
+                        "parent_repeater": "field_6724a59f1eadb"
+                    },
+                    {
+                        "key": "field_6724a6161eadd",
+                        "label": "Gallery",
+                        "name": "gallery",
+                        "aria-label": "",
+                        "type": "gallery",
+                        "instructions": "",
+                        "required": 0,
+                        "conditional_logic": 0,
+                        "wrapper": {
+                            "width": "",
+                            "class": "",
+                            "id": ""
+                        },
+                        "return_format": "array",
+                        "library": "all",
+                        "min": "",
+                        "max": "",
+                        "min_width": "",
+                        "min_height": "",
+                        "min_size": "",
+                        "max_width": "",
+                        "max_height": "",
+                        "max_size": "",
+                        "mime_types": "",
+                        "insert": "append",
+                        "preview_size": "medium",
+                        "parent_repeater": "field_6724a59f1eadb"
+                    },
+                    {
+                        "key": "field_6724a6231eade",
+                        "label": "ENQUIRE",
+                        "name": "enquire",
+                        "aria-label": "",
+                        "type": "text",
+                        "instructions": "",
+                        "required": 0,
+                        "conditional_logic": 0,
+                        "wrapper": {
+                            "width": "",
+                            "class": "",
+                            "id": ""
+                        },
+                        "default_value": "[gravityform id=\"1\" title=\"false\" description=\"false\" ajax=\"true\" tabindex=\"49\"]",
+                        "maxlength": "",
+                        "allow_in_bindings": 0,
+                        "placeholder": "",
+                        "prepend": "",
+                        "append": "",
+                        "parent_repeater": "field_6724a59f1eadb"
+                    },
+                    {
+                        "key": "field_6724a6971eadf",
+                        "label": "BOOK NOW",
+                        "name": "book_now",
+                        "aria-label": "",
+                        "type": "text",
+                        "instructions": "",
+                        "required": 0,
+                        "conditional_logic": 0,
+                        "wrapper": {
+                            "width": "",
+                            "class": "",
+                            "id": ""
+                        },
+                        "default_value": "",
+                        "maxlength": "",
+                        "allow_in_bindings": 0,
+                        "placeholder": "",
+                        "prepend": "",
+                        "append": "",
+                        "parent_repeater": "field_6724a59f1eadb"
+                    },
+                    {
+                        "key": "field_67374b0821bea",
+                        "label": "Seat Plan",
+                        "name": "seat_plan",
+                        "aria-label": "",
+                        "type": "image",
+                        "instructions": "",
+                        "required": 0,
+                        "conditional_logic": 0,
+                        "wrapper": {
+                            "width": "",
+                            "class": "",
+                            "id": ""
+                        },
+                        "return_format": "array",
+                        "library": "all",
+                        "min_width": "",
+                        "min_height": "",
+                        "min_size": "",
+                        "max_width": "",
+                        "max_height": "",
+                        "max_size": "",
+                        "mime_types": "",
+                        "allow_in_bindings": 0,
+                        "preview_size": "medium",
+                        "parent_repeater": "field_6724a59f1eadb"
+                    }
+                ]
+            },
+            {
+                "key": "field_673760dcb836c",
+                "label": "Related Events",
+                "name": "related_events",
+                "aria-label": "",
+                "type": "post_object",
+                "instructions": "",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "post_type": [
+                    "event"
+                ],
+                "post_status": [
+                    "publish"
+                ],
+                "taxonomy": "",
+                "return_format": "object",
+                "multiple": 1,
+                "allow_null": 0,
+                "allow_in_bindings": 0,
+                "bidirectional": 0,
+                "ui": 1,
+                "bidirectional_target": []
+            }
+        ],
+        "location": [
+            [
+                {
+                    "param": "post_type",
+                    "operator": "==",
+                    "value": "event"
+                }
+            ]
+        ],
+        "menu_order": 10,
+        "position": "acf_after_title",
+        "style": "default",
+        "label_placement": "top",
+        "instruction_placement": "label",
+        "hide_on_screen": "",
+        "active": true,
+        "description": "",
+        "show_in_rest": 0
+    },
+    {
+        "key": "taxonomy_672decbcd249f",
+        "title": "Event Categories",
+        "menu_order": 0,
+        "active": true,
+        "taxonomy": "event-category",
+        "object_type": [
+            "event"
+        ],
+        "advanced_configuration": 1,
+        "import_source": "",
+        "import_date": "",
+        "labels": {
+            "name": "Event Categories",
+            "singular_name": "Event Category",
+            "menu_name": "Event Categories",
+            "all_items": "All Event Categories",
+            "edit_item": "Edit Event Category",
+            "view_item": "View Event Category",
+            "update_item": "Update Event Category",
+            "add_new_item": "Add New Event Category",
+            "new_item_name": "New Event Category Name",
+            "parent_item": "Parent Event Category",
+            "parent_item_colon": "Parent Event Category:",
+            "search_items": "Search Event Categories",
+            "most_used": "",
+            "not_found": "No event categories found",
+            "no_terms": "No event categories",
+            "name_field_description": "",
+            "slug_field_description": "",
+            "parent_field_description": "",
+            "desc_field_description": "",
+            "filter_by_item": "Filter by event category",
+            "items_list_navigation": "Event Categories list navigation",
+            "items_list": "Event Categories list",
+            "back_to_items": "← Go to event categories",
+            "item_link": "Event Category Link",
+            "item_link_description": "A link to a event category"
+        },
+        "description": "",
+        "capabilities": {
+            "manage_terms": "manage_categories",
+            "edit_terms": "manage_categories",
+            "delete_terms": "manage_categories",
+            "assign_terms": "edit_posts"
+        },
+        "public": 1,
+        "publicly_queryable": 1,
+        "hierarchical": 1,
+        "show_ui": 1,
+        "show_in_menu": 1,
+        "show_in_nav_menus": 1,
+        "show_in_rest": 1,
+        "rest_base": "",
+        "rest_namespace": "wp\/v2",
+        "rest_controller_class": "WP_REST_Terms_Controller",
+        "show_tagcloud": 1,
+        "show_in_quick_edit": 1,
+        "show_admin_column": 1,
+        "rewrite": {
+            "permalink_rewrite": "taxonomy_key",
+            "with_front": "1",
+            "rewrite_hierarchical": "1"
+        },
+        "query_var": "post_type_key",
+        "query_var_name": "",
+        "default_term": {
+            "default_term_enabled": "0"
+        },
+        "sort": 1,
+        "meta_box": "default",
+        "meta_box_cb": "",
+        "meta_box_sanitize_cb": ""
+    },
+    {
+        "key": "taxonomy_6724e37139492",
+        "title": "Event Types",
+        "menu_order": 0,
+        "active": true,
+        "taxonomy": "event-type",
+        "object_type": [
+            "event"
+        ],
+        "advanced_configuration": 1,
+        "import_source": "",
+        "import_date": "",
+        "labels": {
+            "name": "Event Types",
+            "singular_name": "Event Type",
+            "menu_name": "Event Types",
+            "all_items": "All Event Types",
+            "edit_item": "Edit Event Type",
+            "view_item": "View Event Type",
+            "update_item": "Update Event Type",
+            "add_new_item": "Add New Event Type",
+            "new_item_name": "New Event Type Name",
+            "parent_item": "Parent Event Type",
+            "parent_item_colon": "Parent Event Type:",
+            "search_items": "Search Event Types",
+            "most_used": "",
+            "not_found": "No event types found",
+            "no_terms": "No event types",
+            "name_field_description": "",
+            "slug_field_description": "",
+            "parent_field_description": "",
+            "desc_field_description": "",
+            "filter_by_item": "Filter by event type",
+            "items_list_navigation": "Event Types list navigation",
+            "items_list": "Event Types list",
+            "back_to_items": "← Go to event types",
+            "item_link": "Event Type Link",
+            "item_link_description": "A link to a event type"
+        },
+        "description": "",
+        "capabilities": {
+            "manage_terms": "manage_categories",
+            "edit_terms": "manage_categories",
+            "delete_terms": "manage_categories",
+            "assign_terms": "edit_posts"
+        },
+        "public": 1,
+        "publicly_queryable": 1,
+        "hierarchical": 1,
+        "show_ui": 1,
+        "show_in_menu": 1,
+        "show_in_nav_menus": 1,
+        "show_in_rest": 1,
+        "rest_base": "",
+        "rest_namespace": "wp\/v2",
+        "rest_controller_class": "WP_REST_Terms_Controller",
+        "show_tagcloud": 1,
+        "show_in_quick_edit": 1,
+        "show_admin_column": 1,
+        "rewrite": {
+            "permalink_rewrite": "taxonomy_key",
+            "with_front": "1",
+            "rewrite_hierarchical": "0"
+        },
+        "query_var": "post_type_key",
+        "query_var_name": "",
+        "default_term": {
+            "default_term_enabled": "0"
+        },
+        "sort": 1,
+        "meta_box": "default",
+        "meta_box_cb": "",
+        "meta_box_sanitize_cb": ""
+    },
+    {
+        "key": "post_type_6724e349cd478",
+        "title": "Events",
+        "menu_order": 0,
+        "active": true,
+        "post_type": "event",
+        "advanced_configuration": true,
+        "import_source": "",
+        "import_date": "",
+        "labels": {
+            "name": "Events",
+            "singular_name": "Event",
+            "menu_name": "Events",
+            "all_items": "All Events",
+            "edit_item": "Edit Event",
+            "view_item": "View Event",
+            "view_items": "View Events",
+            "add_new_item": "Add New Event",
+            "add_new": "Add New Event",
+            "new_item": "New Event",
+            "parent_item_colon": "Parent Event:",
+            "search_items": "Search Events",
+            "not_found": "No events found",
+            "not_found_in_trash": "No events found in the bin",
+            "archives": "Event Archives",
+            "attributes": "Event Attributes",
+            "featured_image": "",
+            "set_featured_image": "",
+            "remove_featured_image": "",
+            "use_featured_image": "",
+            "insert_into_item": "Insert into event",
+            "uploaded_to_this_item": "Uploaded to this event",
+            "filter_items_list": "Filter events list",
+            "filter_by_date": "Filter events by date",
+            "items_list_navigation": "Events list navigation",
+            "items_list": "Events list",
+            "item_published": "Event published.",
+            "item_published_privately": "Event published privately.",
+            "item_reverted_to_draft": "Event reverted to draft.",
+            "item_scheduled": "Event scheduled.",
+            "item_updated": "Event updated.",
+            "item_link": "Event Link",
+            "item_link_description": "A link to a event."
+        },
+        "description": "",
+        "public": true,
+        "hierarchical": true,
+        "exclude_from_search": false,
+        "publicly_queryable": true,
+        "show_ui": true,
+        "show_in_menu": true,
+        "admin_menu_parent": "",
+        "show_in_admin_bar": true,
+        "show_in_nav_menus": true,
+        "show_in_rest": true,
+        "rest_base": "",
+        "rest_namespace": "wp\/v2",
+        "rest_controller_class": "WP_REST_Posts_Controller",
+        "menu_position": "",
+        "menu_icon": {
+            "type": "dashicons",
+            "value": "dashicons-calendar"
+        },
+        "rename_capabilities": false,
+        "singular_capability_name": "post",
+        "plural_capability_name": "posts",
+        "supports": [
+            "title",
+            "editor",
+            "thumbnail",
+            "custom-fields"
+        ],
+        "taxonomies": [
+            "event-category"
+        ],
+        "has_archive": true,
+        "has_archive_slug": "",
+        "rewrite": {
+            "permalink_rewrite": "post_type_key",
+            "with_front": "1",
+            "feeds": "0",
+            "pages": "1"
+        },
+        "query_var": "post_type_key",
+        "query_var_name": "",
+        "can_export": true,
+        "delete_with_user": false,
+        "register_meta_box_cb": "",
+        "enter_title_here": ""
+    }
+]
