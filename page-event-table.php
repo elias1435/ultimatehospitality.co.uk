@@ -69,11 +69,12 @@ get_header();  // Include the header
     <select name="event_category" id="event_category" class="border px-4 py-2 rounded-md w-full">
         <option value="">Select Category</option>
         <?php
-        // Get all event categories including their hierarchy
+        // Get all event categories excluding "Featured" (tag_ID 138), and hide empty categories
         $categories = get_terms(array(
             'taxonomy' => 'event-category',
             'orderby' => 'name',
-            'hide_empty' => false,
+            'hide_empty' => true, // Exclude categories with no posts
+            'exclude' => array(138), // Exclude the "Featured" category
         ));
 
         // Build a tree structure from flat terms
@@ -106,6 +107,7 @@ get_header();  // Include the header
     </select>
 </div>
 <!-- end Category Filter -->
+
 			
 			
 			
