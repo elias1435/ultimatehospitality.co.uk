@@ -230,4 +230,4 @@ document.getElementById('pagination').addEventListener('click', function(e) {
 // Initially fetch the events when the page loads
 document.addEventListener('DOMContentLoaded', () => fetchEvents());
 
-</script>
+</script> 
