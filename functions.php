@@ -56,7 +56,7 @@ function filter_events_ajax() {
 
     $args = array(
         'post_type' => 'event',
-        'posts_per_page' => 10,
+        'posts_per_page' => 30,
         'paged' => $paged,
         'orderby' => 'meta_value',
         'order' => 'ASC',
@@ -141,3 +141,78 @@ function filter_events_ajax() {
 
 add_action('wp_ajax_filter_events', 'filter_events_ajax');
 add_action('wp_ajax_nopriv_filter_events', 'filter_events_ajax');
+
+
+
+// search in category
+function enqueue_event_category_search_script($hook) {
+    global $post_type;
+
+    // Load script only on "Event" post edit/add page
+    if ($post_type == 'event' && ($hook == 'post.php' || $hook == 'post-new.php')) {
+        wp_enqueue_script('jquery'); // Ensure jQuery is loaded
+
+        // Add inline JavaScript directly in functions.php
+        wp_add_inline_script('jquery', '
+            jQuery(document).ready(function ($) {
+                // Insert search box above the category list
+                var searchBox = $("<input>", {
+                    type: "text",
+                    id: "event-category-search",
+                    placeholder: "Search Event Categories...",
+                    style: "width: 100%; margin-bottom: 10px; padding: 5px;"
+                });
+
+                $("#event-categorydiv .inside").prepend(searchBox);
+
+                // Function to filter checkboxes
+                $("#event-category-search").on("keyup", function () {
+                    var searchTerm = $(this).val().toLowerCase();
+
+                    $("#event-categorydiv .categorychecklist label").each(function () {
+                        var categoryLabel = $(this).text().toLowerCase();
+
+                        if (categoryLabel.includes(searchTerm)) {
+                            $(this).closest("li").show();
+                        } else {
+                            $(this).closest("li").hide();
+                        }
+                    });
+                });
+            });
+        ');
+    }
+}
+add_action('admin_enqueue_scripts', 'enqueue_event_category_search_script');
+
+
+// pagination
+function load_more_events_ajax_handler() {
+    $page     = isset($_POST['page']) ? intval($_POST['page']) : 1;
+    $term_id  = isset($_POST['term_id']) ? intval($_POST['term_id']) : 0;
+    $taxonomy = sanitize_text_field($_POST['taxonomy']);
+
+    $events = new WP_Query([
+        'post_type'      => 'event',
+        'posts_per_page' => 3,
+        'paged'          => $page,
+        'tax_query'      => [[
+            'taxonomy'         => $taxonomy,
+            'field'            => 'term_id',
+            'terms'            => $term_id,
+            'include_children' => false,
+        ]],
+    ]);
+
+    if ($events->have_posts()) :
+        while ($events->have_posts()): $events->the_post();
+            // Render each event card here the same way as in main loop
+            get_template_part('template-parts/event-card'); // or copy-paste the card HTML directly
+        endwhile;
+        wp_reset_postdata();
+    endif;
+
+    wp_die();
+}
+add_action('wp_ajax_load_more_events', 'load_more_events_ajax_handler');
+add_action('wp_ajax_nopriv_load_more_events', 'load_more_events_ajax_handler');
