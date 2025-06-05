@@ -1,11 +1,14 @@
 <?php
-/* Template for displaying single Event custom post type */
+/* Template for displaying single Event custom post type
+ * Template Name: Single Event Page Template
+ *  */
 
 get_header();
 
 if (have_posts()) :
     while (have_posts()) : the_post();
         $event_date = get_field('event_date');
+		$event_end_date = get_field('event_end_date');
         $event_location = get_field('event_location');
         $packages = get_field('package');
         $featured_image_url = get_the_post_thumbnail_url(get_the_ID(), 'full');
@@ -24,24 +27,50 @@ if (have_posts()) :
 
 <div class="main-event-wrapper">
     <!-- Featured Image with Title Overlay -->
-    <div class="event-hero bg-cover bg-center" style="background-image: url('<?php echo esc_url($featured_image_url); ?>');">
-        <div class="event-title-overlay text-4xl content-center h-96 font-normal text-white text-center bg-black bg-opacity-50 py-4">
+    <div class="event-hero bg-cover bg-center bg-no-repeat bg-cover" style="background-image: url('<?php echo esc_url($featured_image_url); ?>');">
+        <div class="event-title-overlay text-4xl content-end h-96 font-normal text-white text-center">
 <!--             <h2 class="font-normal text-white text-center uppercase"><?php // echo esc_html($event_type); ?></h2> -->
-			<h1 class="font-normal text-white text-center text-4xl uppercase post-title"><?php the_title(); ?></h1>
+			<h1 class="font-normal text-white text-center text-lg post-title bg-black bg-opacity-50"><?php the_title(); ?></h1>
         </div>
     </div>
 
     <div class="single-event">
-        <div class="bg-brand marginy-50">
+        <div class="date-location-wrapper">
             <div class="p-10">
                 <div class="text-center">
-                    <p class="text-xl text-white uppercase post-meta"><?php echo esc_html($event_date); ?></p>
-                    <p class="mt-4 text-xl text-white uppercase post-meta"><?php echo esc_html($event_location); ?></p>
+					<?php
+					function render_calendar_block($date) {
+						if (!$date) return;
+						$timestamp = strtotime($date);
+						$year = date("Y", $timestamp);
+						$month = strtoupper(date("F", $timestamp));
+						$day = date("d", $timestamp);
+						$weekday = date("l", $timestamp);
+						?>
+						<div class="calendar-card text-xl text-white uppercase post-meta">
+							<div class="calendar-year"><?php echo esc_html($year); ?></div>
+							<div class="calendar-month"><?php echo esc_html($month); ?></div>
+							<div class="calendar-day"><?php echo esc_html($day); ?></div>
+							<div class="calendar-weekday"><?php echo esc_html($weekday); ?></div>
+						</div>
+						<?php
+					}
+					if (!empty($event_date)) : ?>
+						<div class="calendar-range-wrapper flex items-center gap-4">
+							<?php render_calendar_block($event_date); ?>
+
+							<?php if (!empty($event_end_date)) : ?>
+								<span class="text-black font-bold text-xl">→</span>
+								<?php render_calendar_block($event_end_date); ?>
+							<?php endif; ?>
+						</div>
+					<?php endif; ?>
+                    <p class="mt-4 text-xl text-black uppercase post-meta location-tag"><?php echo esc_html($event_location); ?></p>
                 </div>
             </div>
         </div>
 
-        <div class="event-description px-4 mt-4">
+        <div class="event-description px-4 mt-4 main-event-description">
             <?php the_content(); ?>
         </div>
 
@@ -49,7 +78,7 @@ if (have_posts()) :
             <div class="event-packages mt-8 px-4">
                 <?php foreach ($packages as $index => $package) : ?>
                     <div class="accordion-item marginy-50">
-                        <h3 class="text-2xl font-semibold text-gray-800 mb-4 text-center price-title"><?php echo esc_html($package['package_title']); ?></h3>
+                        <h3 class="text-2xl font-semibold text-gray-800 mb-4 text-center price-title custom-title"><?php echo esc_html($package['package_title']); ?></h3>
 
                         <!-- Displaying Tabs Only If Content Exists -->
                         <div class="flex flex-mbl space-x-4 mb-4">
@@ -84,6 +113,13 @@ if (have_posts()) :
                                     Seat Plan
                                 </button>							
 							<?php endif; ?>
+							
+							<?php if (!empty($package['itinerary'])) : ?>
+                                <button class="accordion-tab py-2 px-4 bg-gray-200 font-semibold text-gray-700" onclick="showAccordionContent(event, 'itinerary-<?php echo $index; ?>')">
+                                    Itinerary
+                                </button>
+                            <?php endif; ?>	
+							
                         </div>
 
                         <!-- Conditional Content Display -->
@@ -95,7 +131,7 @@ if (have_posts()) :
 										<div class="swiper-wrapper">
 											<?php foreach ($package['gallery'] as $image) : ?>
 												<div class="swiper-slide">
-													<a href="<?php echo esc_url($image['url']); ?>" 
+													<a class="gallery-link" href="<?php echo esc_url($image['url']); ?>" 
 													   onclick="openLightbox(event, <?php echo htmlspecialchars(json_encode($package['gallery'])); ?>)" 
 													   class="cursor-pointer">
 														<img src="<?php echo esc_url($image['url']); ?>" 
@@ -133,33 +169,30 @@ if (have_posts()) :
 							<?php if (!empty($package['seat_plan'])) : ?>
 								<!-- Seat Plan Tab Content -->
 								<div id="seat-plan-<?php echo esc_attr($index); ?>" class="accordion-content hidden">
-									<a href="<?php echo esc_url($package['seat_plan']['url']); ?>" 
-									   onclick="openLightbox(event, '<?php echo esc_url($package['seat_plan']['url']); ?>')" 
-									   class="cursor-pointer">
+									<a href="#" onclick="openModal('<?php echo esc_url($package['seat_plan']['url']); ?>')" class="cursor-pointer">
 										<img src="<?php echo esc_url($package['seat_plan']['url']); ?>" 
 											 alt="<?php echo esc_attr($package['seat_plan']['alt'] ?? 'Seat Plan'); ?>" 
 											 class="w-full h-auto rounded-md hover:opacity-80 transition-opacity" />
 									</a>
 								</div>
 							<?php endif; ?>
-							
+                            <?php if (!empty($package['itinerary'])) : ?>
+                                <div id="itinerary-<?php echo $index; ?>" class="accordion-content hidden">
+                                    <div class="details-container"><?php echo wp_kses_post(wpautop($package['itinerary'])); ?></div>
+                                </div>
+                            <?php endif; ?>
                         </div>
-
                     </div>
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
 
-	
-	
-	
-	
 <?php
 $related_events = get_field('related_events');
 
 if ($related_events): ?>
     <div class="related-events">
-        <h3 class="text-2xl font-semibold text-gray-800 mb-4 text-center price-title">Related Events</h3>
+        <h3 class="text-2xl font-semibold text-gray-800 mb-4 text-center price-title custom-title">Related Events</h3>
         <div class="events-grid">
             <?php foreach ($related_events as $event): ?>
                 <div class="event-item">
@@ -187,9 +220,6 @@ if ($related_events): ?>
         </div>
     </div>
 <?php endif; ?>
-
-	
-	
    </div> <!-- end single-event mx-auto -->	
 </div> <!-- end main wrapper -->
 
@@ -210,11 +240,19 @@ if ($related_events): ?>
     </div>
 </div>
 
-
-
-
-
-
+<!-- seat plan lightbox -->
+<div id="seatPlanModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden">
+        <!-- Close Button -->
+        <button onclick="closeModal()" class="close-button absolute top-3 right-3 text-gray-600 hover:text-gray-900">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>	
+    <div class="max-w-[1000px] w-full relative popup-image-container">
+        <!-- Image -->
+        <img id="modalImage" src="" alt="Seat Plan" class="w-full h-auto">
+    </div>
+</div>
 
 
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
@@ -237,10 +275,22 @@ document.addEventListener("DOMContentLoaded", function() {
                 delay: 3000,
                 disableOnInteraction: false,
             },
+            breakpoints: {
+                0: {
+                    slidesPerView: 1
+                },
+                640: {
+                    slidesPerView: 2
+                },
+                1024: {
+                    slidesPerView: 3
+                }
+            }
         });
     });
 });
 
+	
 function showAccordionContent(event, id) {
     const accordionItem = event.currentTarget.closest('.accordion-item');
     const allContent = accordionItem.querySelectorAll('.accordion-content');
@@ -302,10 +352,27 @@ function closeLightbox() {
 }
 
 
+/* seal plan lightbox */
+function openModal(imageUrl) {
+    document.getElementById('modalImage').src = imageUrl;
+    document.getElementById('seatPlanModal').classList.remove('hidden');
+}
+
+// Close modal function
+function closeModal() {
+    document.getElementById('seatPlanModal').classList.add('hidden');
+}
+
+// Close when clicking outside the modal content
+document.getElementById('seatPlanModal').addEventListener('click', function(event) {
+    if (event.target === this) {
+        closeModal();
+    }
+});
 	
 </script>
 
- <style>
+<style>
 
 ::root  {
     --e-global-color-primary: #5BC9DE;
@@ -344,7 +411,7 @@ function closeLightbox() {
 	margin-block-end: .9rem;
 }
 .price-title {
-	color: var(--e-global-color-primary);
+/* 	color: var(--e-global-color-primary); */
     font-size: 30px;
     font-weight: 700;
     text-transform: uppercase;
@@ -406,11 +473,17 @@ function closeLightbox() {
 .gform_button:hover {
    background-color: #000 !important;
 }
-.swiper-slide img:not(.lightbox-img) {
+div:not(.partners-logo) .swiper-slide img:not(.lightbox-img) {
     aspect-ratio: 16 / 9;
     width: 100%;
     height: auto;
     object-fit: cover;
+}
+.partners-logo .swiper-slide img {
+    aspect-ratio: inherit !important;
+    width: inherit !important;
+    height: inherit !important;
+    object-fit: inherit !important;
 }
 /* lightbox */
 #lightbox-modal.hidden {
@@ -460,34 +533,41 @@ function closeLightbox() {
 	background-color: transparent !important;
 	border: none;
 }
-	
+#seatPlanModal {
+    z-index: 100;
+}	
+.close-button {
+    background-color: #5CC9DE;
+}
 	 
 /* related events */
 	 
 .related-events {
     margin: 2rem 0;
 }
-
 .events-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5rem;
     margin-top: 1rem;
+    justify-content: start;
+	grid-template-columns: repeat(4, 1fr);
 }
 .event-item {
     border: 1px solid #eee;
     padding: 1rem;
     border-radius: 4px;
 }
+	 
 .event-item h4 {
     margin-bottom: 0.3rem;
 }
 .event-image {
     margin-bottom: 1rem;
 }
-.event-image img {
+.related-events .event-image img {
     width: 100%;
-    height: auto;
+    aspect-ratio: 5 / 3;
+    object-fit: cover;
     border-radius: 4px;
 }
 .event-excerpt {
@@ -495,11 +575,97 @@ function closeLightbox() {
     color: #666;
     margin-bottom: 1rem;
 }
-.event-date {
+.event-title-overlay h1 {
+    display: inline-block;
+    padding: 8px 20px 5px;
+}
+#seatPlanModal button {
+    border: 1px solid;
+}
+#seatPlanModal button:hover {
+    background-color: var(--e-global-color-primary);
+    color: var(--e-global-color-text);
+}
+.max-w-\[1000px\],
+#modalImage {
+    max-width: 800px;
+	margin: 0 auto;
+}
+.popup-image-container {
+	padding: 50px 0;
+}
+.location-tag {
+    display: inline-block;
+    border-top: 1px dashed #000;
+    padding-top: 16px;
+}
+.main-event-description h3 {
+    font-size: 18px;
+	color: #343434;
+}
+a.gallery-link {
+    pointer-events: none;
+}
+/* calendar date start */
+	 
+.calendar-range-wrapper {
+	width: 100%;
+    max-width: 400px;
+	margin: 0 auto;
+}
+	 
+.calendar-card {
+  width: 180px;
+  border-radius: 8px;
+  overflow: hidden;
+  font-family: Raleway !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  margin: 20px auto;
+  background: url(/wp-content/uploads/2025/04/calendar-top.webp);
+  background-size: contain;
+  background-repeat: no-repeat;
+  padding-top: 18px;
+  background-position: top -12px center;
+}
 
+.calendar-year {
+  background: #c60000;
+  color: white;
+  padding: 8px;
+  font-weight: bold;
+  text-align: center;
+  font-size: 1rem;
+}
+
+.calendar-month {
+  background: #eee;
+  color: #333;
+  padding: 12px 0;
+  font-size: 1rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+.calendar-day {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #000;
+  text-align: center;
+  padding: 12px 0 15px;
+}
+
+.calendar-weekday {
+  background: #111;
+  color: white;
+  text-align: center;
+  padding: 8px 0;
+  font-size: 0.9rem;
+  font-weight: bold;
 }
 
 	 
+	 
+/* calendar date end */
 	 
 /* end related events */
 	 
@@ -511,9 +677,43 @@ function closeLightbox() {
 .flex-mbl {
 	flex-direction: column;
 }
+.events-grid {
+	grid-template-columns: repeat(1, 1fr) !important;
+}	
+.related-events {
+    padding: 0 10px;
+}
+.calendar-card {
+    padding-top: 13px !important;
+}
+	
+.post-title {
+    font-size: 20px !important;
+}
+div:not(.partners-logo) .swiper-slide img:not(.lightbox-img) {
+    aspect-ratio: 16 / 16;
+}
+.custom-title {
+	font-size: 18px !important;
+	letter-spacing: 0em !important;
+}
+.related-events h4.text-xl {
+	font-size: 16px !important;
+}
 		 
 }
 	 
+@media (max-width: 768px) {
+
+.related-events .event-image img {
+    height: 200px !important;
+}
+.events-grid {
+	grid-template-columns: repeat(2, 1fr);
+}	
+
+	
+}
 	 
 /* responsive end */
 	 
