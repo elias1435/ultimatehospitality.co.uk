@@ -109,37 +109,34 @@ function filter_events_ajax() {
             $event_categories = wp_get_post_terms(get_the_ID(), 'event-category');
 
             // Build date display
-$formatted_date = '';
+			$formatted_date = '';
 
-if (!empty($event_date) && strtotime($event_date)) {
-    $start_timestamp = strtotime($event_date);
-    $start_day = date('jS', $start_timestamp); // 1st, 2nd, etc.
-    $start_month = date('F', $start_timestamp);
+			if (!empty($event_date) && strtotime($event_date)) {
+				$start_timestamp = strtotime($event_date);
+				$start_day = date('jS', $start_timestamp); // 1st, 2nd, etc.
+				$start_month = date('F', $start_timestamp);
 
-    if (!empty($event_end_date) && strtotime($event_end_date)) {
-        $end_timestamp = strtotime($event_end_date);
+				if (!empty($event_end_date) && strtotime($event_end_date)) {
+					$end_timestamp = strtotime($event_end_date);
 
-        // Compare dates strictly in 'Y-m-d' format
-        if (date('Y-m-d', $start_timestamp) === date('Y-m-d', $end_timestamp)) {
-            // Same day: only show one
-            $formatted_date = "{$start_day} {$start_month}";
-        } else {
-            $end_day = date('jS', $end_timestamp);
-            $end_month = date('F', $end_timestamp);
+					if (date('Y-m-d', $start_timestamp) === date('Y-m-d', $end_timestamp)) {
+						$formatted_date = "{$start_day} {$start_month}";
+					} else {
+						$end_day = date('jS', $end_timestamp);
+						$end_month = date('F', $end_timestamp);
 
-            if ($start_month === $end_month) {
-                $formatted_date = "{$start_day} – {$end_day} {$start_month}";
-            } else {
-                $formatted_date = "{$start_day} {$start_month} – {$end_day} {$end_month}";
-            }
-        }
-    } else {
-        // Only start date exists
-        $formatted_date = "{$start_day} {$start_month}";
-    }
-}
-
-
+						if ($start_month === $end_month) {
+							$formatted_date = "{$start_day} – {$end_day} {$start_month}";
+						} else {
+							$formatted_date = "{$start_day} {$start_month} – {$end_day} {$end_month}";
+						}
+					}
+				} else {
+					$formatted_date = "{$start_day} {$start_month}";
+				}
+			} else {
+				$formatted_date = 'Date not added';
+			}
 
 
             $categories = array_map(function($cat) {
