@@ -87,12 +87,12 @@ if (!empty($child_terms)): ?>
                     <div class="p-5">
                         <h3 class="brand-color-title mb-2"><?php echo esc_html($child->name); ?></h3>
                         <?php if ($event_date): ?>
-                        <div style="font-size: 14px; font-weight: 700; line-height: 20px; color: #5BC9DE;" class="mt-1"><?php echo esc_html($event_date); ?></div>
+                        <div style="font-size: 14px; font-weight: 700; line-height: 20px; color: #696969;" class="mt-1"><?php echo esc_html($event_date); ?></div>
                         <?php endif; ?>
                         <?php if ($child->description): ?>
-                        <p class="mt-2 mb-4 text-gray-400 text-sm event-description">
-                            <?php echo wp_kses_post(wpautop($child->description)); ?>
-                        </p>
+							<p class="mt-2 mb-4 text-gray-400 text-sm event-description">
+								<?php echo wp_kses_post(wpautop(wp_trim_words($child->description, 53, '...'))); ?>
+							</p>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -285,6 +285,7 @@ if (!empty($child_terms)): ?>
     border-radius: 30px 30px 30px 30px;
     padding: 18px 38px 18px 38px;
 	float: right;
+	border: 1px solid var(--e-global-color-primary) !important;
 }
 .cta-button:hover {
     color: var(--e-global-color-text);
@@ -319,6 +320,14 @@ if (!empty($child_terms)): ?>
     display: flex;
     column-gap: 15px;
     align-content: center;
+}
+.event-dates-tbc {
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 25px;
+	text-transform: uppercase;
+    color: var(--e-global-color-secondary) !important;
+    font-family: var(--e-global-typography-primary-font-family), Sans-serif;
 }
 
 /* animation start */
