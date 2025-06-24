@@ -52,7 +52,7 @@ $child_terms = get_terms([
     'hide_empty' => false,
 ]);
 
-// Cusom ACF term field sorting
+// Custom ACF term field sorting
 if (!empty($child_terms)):
 	usort($child_terms, function($a, $b) use ($taxonomy) {
 		$date_a = get_field('event_category_date', "{$taxonomy}_{$a->term_id}");
@@ -131,17 +131,23 @@ if (!empty($child_terms)):
 <?php else: ?>
     <?php
     $paged = max(1, get_query_var('paged') ?: get_query_var('page'));
-    $events = new WP_Query([
-        'post_type'      => 'event',
-        'posts_per_page' => 12,
-        'paged'          => $paged,
-        'tax_query'      => [[
-            'taxonomy'         => $taxonomy,
-            'field'            => 'term_id',
-            'terms'            => $term_id,
-            'include_children' => false,
-        ]],
-    ]);
+    
+	$events = new WP_Query([
+		'post_type'      => 'event',
+		'posts_per_page' => 12,
+		'paged'          => $paged,
+		'meta_key'       => 'event_date',
+		'orderby'        => 'meta_value',
+		'order'          => 'ASC',
+		'meta_type'      => 'DATE',
+		'tax_query'      => [[
+			'taxonomy'         => $taxonomy,
+			'field'            => 'term_id',
+			'terms'            => $term_id,
+			'include_children' => false,
+		]],
+	]);
+
 
     if ($events->have_posts()): ?>
     <div class="max-w-screen-xl mx-auto px-4 pt-6 mb-10 single-events-main-category">
@@ -298,6 +304,7 @@ if (!empty($child_terms)):
 .cta-button:hover {
     color: var(--e-global-color-text);
 }
+.event-description p,
 .event-description {
     font-family: "Raleway", Sans-serif;
     font-size: 18px;
