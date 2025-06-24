@@ -52,7 +52,14 @@ $child_terms = get_terms([
     'hide_empty' => false,
 ]);
 
-if (!empty($child_terms)): ?>
+// Cusom ACF term field sorting
+if (!empty($child_terms)):
+	usort($child_terms, function($a, $b) use ($taxonomy) {
+		$date_a = get_field('event_category_date', "{$taxonomy}_{$a->term_id}");
+		$date_b = get_field('event_category_date', "{$taxonomy}_{$b->term_id}");
+		return strtotime($date_a) <=> strtotime($date_b); // ASC order ✅
+	});
+?>
     <div class="max-w-screen-xl mx-auto px-4 pt-6 pb-6">
         <h2 class="text-2xl font-bold mb-6 brand-color-title uppercase text-center" style="font-size: 28px;"><?php echo esc_html($term->name); ?></h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -60,7 +67,8 @@ if (!empty($child_terms)): ?>
                 $child_image_id = get_field('event_category_image', "{$taxonomy}_{$child->term_id}");
                 $image_url = $child_image_id ? wp_get_attachment_image_url($child_image_id, 'full') : $banner_image_url;
                 $event_date = get_field('event_category_date', "{$taxonomy}_{$child->term_id}");
-
+				
+				// Fetch First Event Price Query
                 $child_event = new WP_Query([
                     'post_type'      => 'event',
                     'posts_per_page' => 1,
@@ -90,9 +98,9 @@ if (!empty($child_terms)): ?>
                         <div style="font-size: 14px; font-weight: 700; line-height: 20px; color: #696969;" class="mt-1"><?php echo esc_html($event_date); ?></div>
                         <?php endif; ?>
                         <?php if ($child->description): ?>
-							<p class="mt-2 mb-4 text-gray-400 text-sm event-description">
+							<div class="event-des mt-2 mb-4 text-gray-400 text-sm event-description">
 								<?php echo wp_kses_post(wpautop(wp_trim_words($child->description, 53, '...'))); ?>
-							</p>
+							</div>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -404,4 +412,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 <?php get_footer(); ?>
-
