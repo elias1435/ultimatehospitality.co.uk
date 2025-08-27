@@ -67,6 +67,7 @@ if (!empty($child_terms)):
                 $child_image_id = get_field('event_category_image', "{$taxonomy}_{$child->term_id}");
                 $image_url = $child_image_id ? wp_get_attachment_image_url($child_image_id, 'full') : $banner_image_url;
                 $event_date = get_field('event_category_date', "{$taxonomy}_{$child->term_id}");
+				$event_end_date = get_field('event_category_end_date', "{$taxonomy}_{$child->term_id}");
 				
 				// Fetch First Event Price Query
                 $child_event = new WP_Query([
@@ -94,9 +95,15 @@ if (!empty($child_terms)):
                     <?php endif; ?>
                     <div class="p-5">
                         <h3 class="brand-color-title mb-2"><?php echo esc_html($child->name); ?></h3>
-                        <?php if ($event_date): ?>
-                        <div style="font-size: 14px; font-weight: 700; line-height: 20px; color: #696969;" class="mt-1"><?php echo esc_html($event_date); ?></div>
-                        <?php endif; ?>
+						
+						<div class="date-wrapper">
+							<?php if ($event_date): ?>
+								<div style="font-size: 14px; font-weight: 700; line-height: 20px; color: #696969;" class="mt-1"> <?php echo esc_html($event_date); ?></div>
+							<?php endif; ?>
+							<?php if ($event_end_date): ?>
+								<div style="font-size: 14px; font-weight: 700; line-height: 20px; color: #696969;" class="mt-1">- <?php echo esc_html($event_end_date); ?></div>
+							<?php endif; ?>
+						</div>						
                         <?php if ($child->description): ?>
 							<div class="event-des mt-2 mb-4 text-gray-400 text-sm event-description">
 								<?php echo wp_kses_post(wpautop(wp_trim_words($child->description, 53, '...'))); ?>
@@ -134,7 +141,7 @@ if (!empty($child_terms)):
     
 	$events = new WP_Query([
 		'post_type'      => 'event',
-		'posts_per_page' => 12,
+		'posts_per_page' => 30,
 		'paged'          => $paged,
 		'meta_key'       => 'event_date',
 		'orderby'        => 'meta_value',
@@ -317,6 +324,7 @@ if (!empty($child_terms)):
 	color: var(--e-global-color-primary) !important;
 	font-family: 'Roboto Mono', monospace !important;
     font-size: 24px !important;
+	text-transform: lowercase;
 }
 .tdp-wrapper {
 	display: flex;
@@ -344,7 +352,14 @@ if (!empty($child_terms)):
     color: var(--e-global-color-secondary) !important;
     font-family: var(--e-global-typography-primary-font-family), Sans-serif;
 }
-
+	
+.date-wrapper {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+	gap: 5px;
+}
+		
 /* animation start */
 @keyframes fadeInUpSlow {
 0% {
