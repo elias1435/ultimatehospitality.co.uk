@@ -127,7 +127,7 @@ get_header();  // Include the header
                 <th class="px-4 py-2 text-left font-semibold">Date</th>
                 <th class="px-4 py-2 text-left font-semibold">Event</th>
                 <th class="px-4 py-2 text-left font-semibold">Location</th>
-                <th class="px-4 py-2 text-left font-semibold">Category</th>
+                <th class="px-4 py-2 text-left font-semibold category-column">Category</th>
             </tr>
         </thead>
         <tbody id="event-table-body">
@@ -174,6 +174,14 @@ get_header();  // Include the header
 		
 }
 
+@media (max-width: 480px) {
+	
+.event-listing-tabale .category-column {
+	display: none !important;
+}
+	
+	
+}
  
 </style>
 
@@ -230,4 +238,4 @@ document.getElementById('pagination').addEventListener('click', function(e) {
 // Initially fetch the events when the page loads
 document.addEventListener('DOMContentLoaded', () => fetchEvents());
 
-</script> 
+</script>
