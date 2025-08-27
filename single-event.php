@@ -190,36 +190,78 @@ if (have_posts()) :
 <?php
 $related_events = get_field('related_events');
 
-if ($related_events): ?>
+if ($related_events): 
+    // Step 1: Filter only future or today's events
+    $filtered_events = array_filter($related_events, function($event) {
+        $event_date = get_field('event_date', $event->ID);
+        return $event_date && strtotime(trim($event_date)) >= strtotime('today');
+    });
+
+    // Step 2: Sort by event_date ascending
+    usort($filtered_events, function($a, $b) {
+        return strtotime(get_field('event_date', $a->ID)) <=> strtotime(get_field('event_date', $b->ID));
+    });
+
+    // Step 3: If we still have events, show them
+    if (!empty($filtered_events)): ?>
+    
     <div class="related-events">
         <h3 class="text-2xl font-semibold text-gray-800 mb-4 text-center price-title custom-title">Related Events</h3>
         <div class="events-grid">
-            <?php foreach ($related_events as $event): ?>
+            <?php foreach ($filtered_events as $event):
+                $event_date      = get_field('event_date', $event->ID);
+                $event_end_date  = get_field('event_end_date', $event->ID);
+                $formatted_event_date = 'To Be Confirmed';
+
+                if ($event_date) {
+                    $start_ts       = strtotime(trim($event_date));
+                    $start_day_name = date('l', $start_ts);
+                    $start_day      = date('jS', $start_ts);
+                    $start_month    = date('F', $start_ts);
+                    $start_year     = date('Y', $start_ts);
+
+                    if ($event_end_date) {
+                        $end_ts    = strtotime(trim($event_end_date));
+                        $end_day   = date('jS', $end_ts);
+                        $end_month = date('F', $end_ts);
+                        $end_year  = date('Y', $end_ts);
+
+                        if ($start_month === $end_month && $start_year === $end_year) {
+                            // Same month and year
+                            $formatted_event_date = "{$start_day} {$start_month} – {$end_day} {$start_month} {$start_year}";
+                        } else {
+                            // Different month or year
+                            $formatted_event_date = "{$start_day_name} {$start_day} {$start_month} {$start_year} – {$end_day} {$end_month} {$end_year}";
+                        }
+                    } else {
+                        // No end date
+                        $formatted_event_date = "{$start_day_name} {$start_day} {$start_month} {$start_year}";
+                    }
+                }
+            ?>
                 <div class="event-item">
-                    <?php 
-                    // Optional: Display featured image if available
-                    if (has_post_thumbnail($event->ID)): ?>
+                    <?php if (has_post_thumbnail($event->ID)): ?>
                         <div class="event-image">
-                            <a href="<?php echo get_permalink($event->ID); ?>"><?php echo get_the_post_thumbnail($event->ID, 'medium'); ?></a>
+                            <a href="<?php echo get_permalink($event->ID); ?>">
+                                <?php echo get_the_post_thumbnail($event->ID, 'medium'); ?>
+                            </a>
                         </div>
                     <?php endif; ?>
-					<h4 class="text-xl font-semibold m-0 text-gray-800 text-left">
+                    <h4 class="text-xl font-semibold m-0 text-gray-800 text-left">
                         <a href="<?php echo get_permalink($event->ID); ?>">
                             <?php echo get_the_title($event->ID); ?>
-                        </a>					
-					</h4>
-                    <?php 
-                    $event_date = get_field('event_date', $event->ID);
-                    if ($event_date): ?>
-                        <p class="event-date">
-                            <?php echo esc_html($event_date); ?>
-                        </p>
-                    <?php endif; ?>
+                        </a>
+                    </h4>
+                    <p class="event-date"><?php echo esc_html($formatted_event_date); ?></p>
                 </div>
             <?php endforeach; ?>
         </div>
     </div>
-<?php endif; ?>
+<?php endif; endif; ?>
+
+
+
+		
    </div> <!-- end single-event mx-auto -->	
 </div> <!-- end main wrapper -->
 
@@ -370,6 +412,47 @@ document.getElementById('seatPlanModal').addEventListener('click', function(even
     }
 });
 	
+	
+// Description gallary animation
+document.addEventListener("DOMContentLoaded", () => {
+  const items = document.querySelectorAll(".gallery-item");
+
+  // Add animation class after DOM loads
+  items.forEach(item => item.classList.add("animate-on-scroll"));
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, index) => {
+      if (entry.isIntersecting) {
+        const item = entry.target;
+        if (!item.classList.contains("visible")) {
+          setTimeout(() => {
+            item.classList.add("visible");
+          }, index * 150);
+        }
+        observer.unobserve(item);
+      }
+    });
+  }, {
+    threshold: 0.1
+  });
+
+  items.forEach(item => observer.observe(item));
+});
+
+	
+// gallery images on tab description
+document.addEventListener('DOMContentLoaded', function () {
+	document.querySelectorAll('.gallery').forEach(function (g) {
+		const items = g.querySelectorAll(':scope > figure').length;
+		let cols = items >= 5 ? 5 : items; // cap at 5
+		if (items === 4) cols = 3;         // special case
+		// apply inline style or a CSS custom property
+		g.style.display = 'grid';
+		g.style.gap = g.style.gap || '16px';
+		g.style.gridTemplateColumns = `repeat(${Math.max(cols, 1)}, minmax(0, 1fr))`;
+	});
+});
+
 </script>
 
 <style>
@@ -662,14 +745,87 @@ a.gallery-link {
   font-size: 0.9rem;
   font-weight: bold;
 }
-
-	 
 	 
 /* calendar date end */
 	 
 /* end related events */
-	 
-	 
+
+	
+/* Event Description gallery start */
+	
+.event-description .gallery {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+	margin-top: 50px;
+    margin-bottom: 80px;
+}
+.event-description .gallery-item {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+/* Add an animation-only class, not default state */
+.event-description .gallery-item.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.event-description .gallery-item.animate-on-scroll.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+	
+/* Event Description gallery end */
+	
+/* Event gallery on descrition tab */
+
+.details-container .gallery {
+  display: grid;
+  gap: 16px; /* adjust spacing */
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+/* --- Handle exact child counts on desktop --- */
+.details-container .gallery:has(> figure:nth-child(1):last-child) {
+  grid-template-columns: 1fr;
+}
+.details-container .gallery:has(> figure:nth-child(2):last-child) {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.details-container .gallery:has(> figure:nth-child(3):last-child) {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+/* special case for 4 */
+.details-container .gallery:has(> figure:nth-child(4):last-child) {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+/* 5 stays 5 (already default, explicit for clarity) */
+.details-container .gallery:has(> figure:nth-child(5):last-child) {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+/* --- Tablet: force 2 columns always --- */
+@media (max-width: 992px) {
+  .details-container .gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+/* Make figures fill grid cell */
+.details-container .gallery > .gallery-item {
+  width: 100%;
+}
+.details-container .gallery .gallery-icon a,
+.details-container .gallery .gallery-icon img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+
+
 /* responsive start */
 	
 @media (max-width: 480px) {
@@ -700,8 +856,19 @@ div:not(.partners-logo) .swiper-slide img:not(.lightbox-img) {
 .related-events h4.text-xl {
 	font-size: 16px !important;
 }
+.event-description .gallery {
+	grid-template-columns: repeat(2, 1fr) !important;
+}
 		 
 }
+
+/* --- Mobile: force 1 column always --- */
+@media (max-width: 576px) {
+  .details-container .gallery {
+    grid-template-columns: 1fr !important;
+  }
+}
+
 	 
 @media (max-width: 768px) {
 
@@ -712,6 +879,13 @@ div:not(.partners-logo) .swiper-slide img:not(.lightbox-img) {
 	grid-template-columns: repeat(2, 1fr);
 }	
 
+}
+	
+@media (max-width: 1024px) {
+	
+.event-description .gallery {
+	grid-template-columns: repeat(3, 1fr);
+}
 	
 }
 	 
