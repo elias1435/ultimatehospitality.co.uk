@@ -1,39 +1,4 @@
 <?php
-/**
- * Theme functions and definitions.
- *
- * For additional information on potential customization options,
- * read the developers' documentation:
- *
- * https://developers.elementor.com/docs/hello-elementor-theme/
- *
- * @package HelloElementorChild
- */
-
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly.
-}
-
-define( 'HELLO_ELEMENTOR_CHILD_VERSION', '2.0.0' );
-
-/**
- * Load child theme scripts & styles.
- *
- * @return void
- */
-function hello_elementor_child_scripts_styles() {
-
-	wp_enqueue_style(
-		'hello-elementor-child-style',
-		get_stylesheet_directory_uri() . '/style.css',
-		[
-			'hello-elementor-theme-style',
-		],
-		HELLO_ELEMENTOR_CHILD_VERSION
-	);
-}
-add_action( 'wp_enqueue_scripts', 'hello_elementor_child_scripts_styles', 20 );
-
 
 // ACF Admin CSS
 function my_acf_admin_head() {
@@ -60,7 +25,7 @@ function filter_events_ajax() {
 
     $args = array(
         'post_type' => 'event',
-        'posts_per_page' => 30,
+        'posts_per_page' => 150,
         'paged' => $paged,
         'orderby' => 'meta_value',
         'order' => 'ASC',
@@ -135,7 +100,7 @@ function filter_events_ajax() {
 					$formatted_date = "{$start_day} {$start_month}";
 				}
 			} else {
-				$formatted_date = 'Date not added';
+				$formatted_date = 'To Be Confirmed';
 			}
 
 
@@ -147,7 +112,7 @@ function filter_events_ajax() {
             $table .= '<td class="px-4 py-2 border-b border-gray-200">' . esc_html($formatted_date) . '</td>';
             $table .= '<td class="px-4 py-2 border-b border-gray-200"><a href="' . get_permalink() . '" class="text-blue-500 hover:underline">' . get_the_title() . '</a></td>';
             $table .= '<td class="px-4 py-2 border-b border-gray-200">' . esc_html($event_location) . '</td>';
-            $table .= '<td class="px-4 py-2 border-b border-gray-200">' . implode(', ', $categories) . '</td>';
+            $table .= '<td class="px-4 py-2 border-b border-gray-200 category-column">' . implode(', ', $categories) . '</td>';
             $table .= '</tr>';
         endwhile;
 
@@ -226,8 +191,14 @@ function load_more_events_ajax_handler() {
 
     $events = new WP_Query([
         'post_type'      => 'event',
-        'posts_per_page' => 3,
+        'posts_per_page' => 12,
         'paged'          => $page,
+		
+        'meta_key'       => 'event_date',
+        'orderby'        => 'meta_value',
+        'order'          => 'ASC',
+        'meta_type'      => 'DATE',
+		
         'tax_query'      => [[
             'taxonomy'         => $taxonomy,
             'field'            => 'term_id',
@@ -248,3 +219,4 @@ function load_more_events_ajax_handler() {
 }
 add_action('wp_ajax_load_more_events', 'load_more_events_ajax_handler');
 add_action('wp_ajax_nopriv_load_more_events', 'load_more_events_ajax_handler');
+
