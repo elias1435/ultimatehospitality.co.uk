@@ -74,118 +74,147 @@ if (have_posts()) :
             <?php the_content(); ?>
         </div>
 
-        <?php if ($packages) : ?>
-            <div class="event-packages mt-8 px-4">
-                <?php foreach ($packages as $index => $package) : ?>
-                    <div class="accordion-item marginy-50">
-                        <h3 class="text-2xl font-semibold text-gray-800 mb-4 text-center price-title custom-title"><?php echo esc_html($package['package_title']); ?></h3>
+<?php if ($packages) : ?>
+    <div class="event-packages mt-8 px-4">
+        <?php foreach ($packages as $index => $package) : ?>
 
-                        <!-- Displaying Tabs Only If Content Exists -->
-                        <div class="flex flex-mbl space-x-4 mb-4">
-                            
-                            <?php if (!empty($package['gallery'])) : ?>
-                                <button class="accordion-tab py-2 px-4 bg-gray-200 font-semibold text-gray-700 active" onclick="showAccordionContent(event, 'gallery-<?php echo $index; ?>')">
-                                    Gallery
-                                </button>
-                            <?php endif; ?>
-							
-                            <?php if (!empty($package['details'])) : ?>
-                                <button class="accordion-tab py-2 px-4 bg-gray-200 font-semibold text-gray-700" onclick="showAccordionContent(event, 'details-<?php echo $index; ?>')">
-                                    Details
-                                </button>
-                            <?php endif; ?>							
-                            
-                            <?php if (!empty($package['enquire'])) : ?>
-                                <button class="accordion-tab py-2 px-4 bg-gray-200 font-semibold text-gray-700" onclick="showAccordionContent(event, 'enquire-<?php echo $index; ?>')">
-                                    Enquire
-                                </button>
-                            <?php endif; ?>
-                            
-                            <?php if (!empty($package['book_now'])) : ?>
-                                <button class="accordion-tab py-2 px-4 bg-gray-200 font-semibold text-gray-700" onclick="showAccordionContent(event, 'book-now-<?php echo $index; ?>')">
-                                    Book Now
-                                </button>
-                            <?php endif; ?>
-							
-							<?php if (!empty($package['seat_plan'])) : ?>
-								<!-- New Seat Plan Tab -->
-                                <button class="accordion-tab py-2 px-4 bg-gray-200 font-semibold text-gray-700" onclick="showAccordionContent(event, 'seat-plan-<?php echo $index; ?>')">
-                                    Seat Plan
-                                </button>							
-							<?php endif; ?>
-							
-							<?php if (!empty($package['itinerary'])) : ?>
-                                <button class="accordion-tab py-2 px-4 bg-gray-200 font-semibold text-gray-700" onclick="showAccordionContent(event, 'itinerary-<?php echo $index; ?>')">
-                                    Itinerary
-                                </button>
-                            <?php endif; ?>	
-							
+            <?php
+            // --- HIDE logic ---
+            // Handles True/False (bool) OR Checkbox (array or string 'hide')
+            $hide_raw = $package['hide_package'] ?? null;
+
+            $should_hide = false;
+            if (is_array($hide_raw)) {
+                // Checkbox returning an array of selected values
+                $lower = array_map('strtolower', array_map('strval', $hide_raw));
+                // hide if any value is selected (or specifically 'hide')
+                $should_hide = !empty($lower); // or: in_array('hide', $lower, true)
+            } else {
+                // True/False returns bool/int; Checkbox (single) may return a string like 'hide'
+                $val = is_string($hide_raw) ? strtolower(trim($hide_raw)) : $hide_raw;
+                $should_hide = (!empty($val) && $val !== '0' && $val !== 'false');
+            }
+
+            if ($should_hide) {
+                // Skip this package completely (no markup output)
+                continue;
+            }
+            ?>
+
+            <div class="accordion-item marginy-50">
+                <h3 class="text-2xl font-semibold text-gray-800 mb-4 text-center price-title custom-title">
+                    <?php echo esc_html($package['package_title']); ?>
+                </h3>
+
+                <!-- Displaying Tabs Only If Content Exists -->
+                <div class="flex flex-mbl space-x-4 mb-4">
+                    <?php if (!empty($package['gallery'])) : ?>
+                        <button class="accordion-tab py-2 px-4 bg-gray-200 font-semibold text-gray-700 active"
+                                onclick="showAccordionContent(event, 'gallery-<?php echo $index; ?>')">
+                            Gallery
+                        </button>
+                    <?php endif; ?>
+
+                    <?php if (!empty($package['details'])) : ?>
+                        <button class="accordion-tab py-2 px-4 bg-gray-200 font-semibold text-gray-700"
+                                onclick="showAccordionContent(event, 'details-<?php echo $index; ?>')">
+                            Details
+                        </button>
+                    <?php endif; ?>
+
+                    <?php if (!empty($package['enquire'])) : ?>
+                        <button class="accordion-tab py-2 px-4 bg-gray-200 font-semibold text-gray-700"
+                                onclick="showAccordionContent(event, 'enquire-<?php echo $index; ?>')">
+                            Enquire
+                        </button>
+                    <?php endif; ?>
+
+                    <?php if (!empty($package['book_now'])) : ?>
+                        <button class="accordion-tab py-2 px-4 bg-gray-200 font-semibold text-gray-700"
+                                onclick="showAccordionContent(event, 'book-now-<?php echo $index; ?>')">
+                            Book Now
+                        </button>
+                    <?php endif; ?>
+
+                    <?php if (!empty($package['seat_plan'])) : ?>
+                        <button class="accordion-tab py-2 px-4 bg-gray-200 font-semibold text-gray-700"
+                                onclick="showAccordionContent(event, 'seat-plan-<?php echo $index; ?>')">
+                            Seat Plan
+                        </button>
+                    <?php endif; ?>
+
+                    <?php if (!empty($package['itinerary'])) : ?>
+                        <button class="accordion-tab py-2 px-4 bg-gray-200 font-semibold text-gray-700"
+                                onclick="showAccordionContent(event, 'itinerary-<?php echo $index; ?>')">
+                            Itinerary
+                        </button>
+                    <?php endif; ?>
+                </div>
+
+                <div class="accordion-content-container bg-white p-2">
+                    <?php if (!empty($package['gallery'])) : ?>
+                        <div id="gallery-<?php echo $index; ?>" class="accordion-content">
+                            <div class="swiper-container gallery-swiper my-4">
+                                <div class="swiper-wrapper">
+                                    <?php foreach ($package['gallery'] as $image) : ?>
+                                        <div class="swiper-slide">
+                                            <a class="gallery-link"
+                                               href="<?php echo esc_url($image['url']); ?>"
+                                               onclick="openLightbox(event, <?php echo htmlspecialchars(json_encode($package['gallery'])); ?>)"
+                                               class="cursor-pointer">
+                                                <img src="<?php echo esc_url($image['url']); ?>"
+                                                     alt="<?php echo esc_attr($image['alt']); ?>"
+                                                     class="rounded-lg shadow hover:opacity-80 transition-opacity">
+                                            </a>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                                <div class="swiper-button-next"></div>
+                                <div class="swiper-button-prev"></div>
+                                <div class="swiper-pagination"></div>
+                            </div>
                         </div>
+                    <?php endif; ?>
 
-                        <!-- Conditional Content Display -->
-                        <div class="accordion-content-container bg-white p-2">
-		
-							<?php if (!empty($package['gallery'])) : ?>
-								<div id="gallery-<?php echo $index; ?>" class="accordion-content">
-									<div class="swiper-container gallery-swiper my-4">
-										<div class="swiper-wrapper">
-											<?php foreach ($package['gallery'] as $image) : ?>
-												<div class="swiper-slide">
-													<a class="gallery-link" href="<?php echo esc_url($image['url']); ?>" 
-													   onclick="openLightbox(event, <?php echo htmlspecialchars(json_encode($package['gallery'])); ?>)" 
-													   class="cursor-pointer">
-														<img src="<?php echo esc_url($image['url']); ?>" 
-															 alt="<?php echo esc_attr($image['alt']); ?>" 
-															 class="rounded-lg shadow hover:opacity-80 transition-opacity">
-													</a>
-												</div>
-											<?php endforeach; ?>
-										</div>
-										<div class="swiper-button-next"></div>
-										<div class="swiper-button-prev"></div>
-										<div class="swiper-pagination"></div>
-									</div>
-								</div>
-							<?php endif; ?>
-							
-                            <?php if (!empty($package['details'])) : ?>
-                                <div id="details-<?php echo $index; ?>" class="accordion-content hidden">
-                                    <div class="details-container"><?php echo wp_kses_post(wpautop($package['details'])); ?></div>
-                                </div>
-                            <?php endif; ?>
-							
-                            <?php if (!empty($package['enquire'])) : ?>
-                                <div id="enquire-<?php echo $index; ?>" class="accordion-content hidden">
-                                    <?php echo do_shortcode($package['enquire']); ?>
-                                </div>
-                            <?php endif; ?>
-
-                            <?php if (!empty($package['book_now'])) : ?>
-                                <div id="book-now-<?php echo $index; ?>" class="accordion-content hidden">
-                                    <?php echo do_shortcode($package['book_now']); ?>
-                                </div>
-                            <?php endif; ?>
-							
-							<?php if (!empty($package['seat_plan'])) : ?>
-								<!-- Seat Plan Tab Content -->
-								<div id="seat-plan-<?php echo esc_attr($index); ?>" class="accordion-content hidden">
-									<a href="#" onclick="openModal('<?php echo esc_url($package['seat_plan']['url']); ?>')" class="cursor-pointer">
-										<img src="<?php echo esc_url($package['seat_plan']['url']); ?>" 
-											 alt="<?php echo esc_attr($package['seat_plan']['alt'] ?? 'Seat Plan'); ?>" 
-											 class="w-full h-auto rounded-md hover:opacity-80 transition-opacity" />
-									</a>
-								</div>
-							<?php endif; ?>
-                            <?php if (!empty($package['itinerary'])) : ?>
-                                <div id="itinerary-<?php echo $index; ?>" class="accordion-content hidden">
-                                    <div class="details-container"><?php echo wp_kses_post(wpautop($package['itinerary'])); ?></div>
-                                </div>
-                            <?php endif; ?>
+                    <?php if (!empty($package['details'])) : ?>
+                        <div id="details-<?php echo $index; ?>" class="accordion-content hidden">
+                            <div class="details-container"><?php echo wp_kses_post(wpautop($package['details'])); ?></div>
                         </div>
-                    </div>
-                <?php endforeach; ?>
+                    <?php endif; ?>
+
+                    <?php if (!empty($package['enquire'])) : ?>
+                        <div id="enquire-<?php echo $index; ?>" class="accordion-content hidden">
+                            <?php echo do_shortcode($package['enquire']); ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (!empty($package['book_now'])) : ?>
+                        <div id="book-now-<?php echo $index; ?>" class="accordion-content hidden">
+                            <?php echo do_shortcode($package['book_now']); ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (!empty($package['seat_plan'])) : ?>
+                        <div id="seat-plan-<?php echo esc_attr($index); ?>" class="accordion-content hidden">
+                            <a href="#" onclick="openModal('<?php echo esc_url($package['seat_plan']['url']); ?>')" class="cursor-pointer">
+                                <img src="<?php echo esc_url($package['seat_plan']['url']); ?>"
+                                     alt="<?php echo esc_attr($package['seat_plan']['alt'] ?? 'Seat Plan'); ?>"
+                                     class="w-full h-auto rounded-md hover:opacity-80 transition-opacity" />
+                            </a>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (!empty($package['itinerary'])) : ?>
+                        <div id="itinerary-<?php echo $index; ?>" class="accordion-content hidden">
+                            <div class="details-container"><?php echo wp_kses_post(wpautop($package['itinerary'])); ?></div>
+                        </div>
+                    <?php endif; ?>
+                </div>
             </div>
-        <?php endif; ?>
+        <?php endforeach; ?>
+    </div>
+<?php endif; ?>
+
 
 <?php
 $related_events = get_field('related_events');
@@ -821,7 +850,8 @@ a.gallery-link {
 .details-container .gallery .gallery-icon img {
   display: block;
   width: 100%;
-  height: auto;
+  height: 170px;
+  object-fit: cover;
 }
 
 
@@ -877,7 +907,11 @@ div:not(.partners-logo) .swiper-slide img:not(.lightbox-img) {
 }
 .events-grid {
 	grid-template-columns: repeat(2, 1fr);
-}	
+}
+.details-container .gallery .gallery-icon a,
+.details-container .gallery .gallery-icon img {
+  height: 190px;
+}
 
 }
 	
